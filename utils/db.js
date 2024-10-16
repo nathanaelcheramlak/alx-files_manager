@@ -1,4 +1,5 @@
-import { mongodb } from 'mongodb';
+#!/usr/bin/node
+import mongodb from 'mongodb';
 
 class DBClient {
   constructor() {
@@ -8,14 +9,7 @@ class DBClient {
     const dbURL = `mongodb://${host}:${port}/${database}`;
 
     this.client = new mongodb.MongoClient(dbURL, { useUnifiedTopology: true });
-    this.client
-      .connect()
-      .then(() => {
-        this.db = this.client.db(`${database}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.client.connect();
   }
 
   isAlive() {
@@ -23,15 +17,15 @@ class DBClient {
   }
 
   async nbUsers() {
-    const users = this.db.collection('users');
-    const usersCount = await users.countDocuments();
-    return usersCount;
+    return this.client.db().collection('users').countDocuments();
   }
 
   async nbFiles() {
-    const files = this.db.collection('files');
-    const fileCount = await files.countDocuments();
-    return fileCount;
+    return this.client.db().collection('files').countDocuments();
+  }
+
+  async usersCollection() {
+    return this.client.db().collection('users');
   }
 }
 
