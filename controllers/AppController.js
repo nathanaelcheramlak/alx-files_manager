@@ -12,9 +12,10 @@ export default class AppController {
   }
 
   static getStats(req, res) {
-    res.status(200).json({
-      users: dbClient.nbUsers(),
-      files: dbClient.nbFiles(),
-    });
+    Promise.all([dbClient.nbUsers(), dbClient.nbFiles()]).then(
+      ([usersCount, filesCount]) => {
+        res.status(200).json({ users: usersCount, files: filesCount });
+      },
+    );
   }
 }
