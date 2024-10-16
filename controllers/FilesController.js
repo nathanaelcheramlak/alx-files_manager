@@ -5,7 +5,9 @@ import { tmpdir } from 'os';
 import { promisify } from 'util';
 import Queue from 'bull/lib/queue';
 import { v4 as uuidv4 } from 'uuid';
-import { mkdir, writeFile, stat, existsSync, realpath } from 'fs';
+import {
+  mkdir, writeFile, stat, existsSync, realpath,
+} from 'fs';
 import { join as joinPath } from 'path';
 import { Request, Response } from 'express';
 import { contentType } from 'mime-types';
@@ -55,8 +57,7 @@ export default class FilesController {
     const { user } = req;
     const name = req.body ? req.body.name : null;
     const type = req.body ? req.body.type : null;
-    const parentId =
-      req.body && req.body.parentId ? req.body.parentId : ROOT_FOLDER_ID;
+    const parentId = req.body && req.body.parentId ? req.body.parentId : ROOT_FOLDER_ID;
     const isPublic = req.body && req.body.isPublic ? req.body.isPublic : false;
     const base64Data = req.body && req.body.data ? req.body.data : '';
 
@@ -91,10 +92,9 @@ export default class FilesController {
       }
     }
     const userId = user._id.toString();
-    const baseDir =
-      `${process.env.FOLDER_PATH || ''}`.trim().length > 0
-        ? process.env.FOLDER_PATH.trim()
-        : joinPath(tmpdir(), DEFAULT_ROOT_FOLDER);
+    const baseDir = `${process.env.FOLDER_PATH || ''}`.trim().length > 0
+      ? process.env.FOLDER_PATH.trim()
+      : joinPath(tmpdir(), DEFAULT_ROOT_FOLDER);
     // default baseDir == '/tmp/files_manager'
     // or (on Windows) '%USERPROFILE%/AppData/Local/Temp/files_manager';
     const newFile = {
@@ -177,8 +177,8 @@ export default class FilesController {
         parentId === ROOT_FOLDER_ID.toString()
           ? parentId
           : new mongoDBCore.BSON.ObjectId(
-              isValidId(parentId) ? parentId : NULL_ID,
-            ),
+            isValidId(parentId) ? parentId : NULL_ID,
+          ),
     };
 
     const files = await (
