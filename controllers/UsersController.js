@@ -1,8 +1,10 @@
 #!/usr/bin/node
 /* eslint-disable import/no-named-as-default */
 import sha1 from 'sha1';
+import Queue from 'bull/lib/queue';
 import dbClient from '../utils/db';
 
+const userQueue = Queue('email sending');
 export default class UsersController {
   static async postNew(req, res) {
     console.log(req.body);
@@ -31,6 +33,13 @@ export default class UsersController {
     ).insertOne({ email, password: sha1(password) });
     const userId = insertionInfo.insertedId.toString();
 
+    userQueue.add({ userId });
     res.status(201).json({ email, id: userId });
+  }
+
+  static async getMe(req, res) {
+    const { user } = req;
+
+    res.status(200).json({ email: user.email, id: user._id.toString() });
   }
 }
